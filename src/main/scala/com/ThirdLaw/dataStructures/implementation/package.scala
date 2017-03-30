@@ -1,6 +1,5 @@
 package com.ThirdLaw.dataStructures
 
-import scala.util.Try
 
 package object implementations {
 
@@ -27,9 +26,9 @@ package object implementations {
       BigInt(i).toByteArray
     }
 
-    private def hashTheFirst: Array[Byte] => Int = hashWithSeed(_, seed = scala.util.hashing.MurmurHash3.arraySeed)
+    private val hashTheFirst: Array[Byte] => Int = hashWithSeed(_, seed = scala.util.hashing.MurmurHash3.arraySeed)
 
-    private def hashTheSecond: Array[Byte] => Int = hashWithSeed(_, seed = scala.util.hashing.MurmurHash3.productSeed)
+    private val hashTheSecond: Array[Byte] => Int = hashWithSeed(_, seed = scala.util.hashing.MurmurHash3.productSeed)
 
     private def hashWithSeed(byteAry: Array[Byte], seed: Int): Int =
       scala.util.hashing.MurmurHash3.arrayHash(byteAry, seed)
@@ -66,12 +65,13 @@ package object implementations {
       indices.foreach(index => bitSet += index)
     }
 
-    private def moduloToIndex(index: Long): Int = Try {
+    //TODO fix abs of Long.MinValue bug
+    private def moduloToIndex(index: Long): Int = {
       val positiveIndex = Math.abs(index)
       val moduloIndex = positiveIndex % LENGTH
       val indexAsInt = moduloIndex.toInt
       indexAsInt
-    }.getOrElse(throw new RuntimeException(s"Invalid index $index - probably great than an Int?"))
+    }
 
     override def isPresent(item: A): Boolean = {
       hashMultiple(item, NUM_HASHES).map(moduloToIndex).forall(index => bitSet.contains(index))
